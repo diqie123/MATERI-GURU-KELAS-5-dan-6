@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pembayaran Sekolah</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .payments-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .payments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .payment-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-5px);
+            border-color: #2193b0;
+            box-shadow: 0 5px 15px rgba(33, 147, 176, 0.3);
+        }
+
+        .payment-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .payment-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .payment-price {
+            color: #2193b0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .cart-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-info {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .student-info h3 {
+            margin-bottom: 15px;
+            color: #2193b0;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #2193b0;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+
+        .cart-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .cart-item-price {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+
+        .cart-summary {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .summary-total {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2193b0;
+            border-top: 2px solid #eee;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 147, 176, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        .empty-cart-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        /* Print Styles */
+        .receipt {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container, .header, .main-content {
+                display: none;
+            }
+
+            .receipt {
+                display: block;
+                width: 80mm;
+                padding: 10mm;
+                font-family: 'Courier New', monospace;
+                font-size: 12pt;
+                color: #000;
+            }
+
+            .receipt-header {
+                text-align: center;
+                border-bottom: 2px dashed #000;
+                padding-bottom: 10px;
+                margin-bottom: 15px;
+            }
+
+            .receipt-title {
+                font-size: 14pt;
+                font-weight: bold;
+                margin-bottom: 5px;
+                text-decoration: underline;
+            }
+
+            .receipt-no {
+                text-align: right;
+                font-size: 10pt;
+                margin-bottom: 10px;
+            }
+
+            .receipt-field {
+                margin-bottom: 8px;
+                display: flex;
+            }
+
+            .receipt-label {
+                width: 140px;
+                display: inline-block;
+            }
+
+            .receipt-value {
+                border-bottom: 1px solid #000;
+                flex-grow: 1;
+                min-height: 20px;
+            }
+
+            .receipt-items {
+                margin: 15px 0;
+                border-top: 1px solid #000;
+                border-bottom: 1px solid #000;
+                padding: 10px 0;
+            }
+
+            .receipt-item {
+                margin-bottom: 5px;
+            }
+
+            .receipt-total-box {
+                background-color: #f0f0f0;
+                padding: 10px;
+                margin: 15px 0;
+                border: 1px solid #000;
+            }
+
+            .receipt-total {
+                font-size: 14pt;
+                font-weight: bold;
+            }
+
+            .receipt-note {
+                font-size: 10pt;
+                font-style: italic;
+                margin-top: 15px;
+            }
+
+            .receipt-footer {
+                text-align: right;
+                margin-top: 30px;
+                padding-top: 10px;
+                border-top: 1px solid #000;
+            }
+
+            .receipt-signature {
+                margin-top: 50px;
+                border-top: 1px solid #000;
+                padding-top: 5px;
+                display: inline-block;
+                min-width: 150px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .payments-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Pembayaran Sekolah</h1>
+            <p>Sistem Pembayaran SPP dan Biaya Sekolah</p>
+        </div>
+
+        <div class="main-content">
+            <div class="payments-section">
+                <h2>Jenis Pembayaran</h2>
+                <div class="payments-grid" id="paymentsGrid"></div>
+            </div>
+
+            <div class="cart-section">
+                <div class="student-info">
+                    <h3>Data Siswa</h3>
+                    <div class="input-group">
+                        <label>Nama Siswa</label>
+                        <input type="text" id="studentName" placeholder="Masukkan nama siswa">
+                    </div>
+                    <div class="input-group">
+                        <label>Kelas</label>
+                        <input type="text" id="studentClass" placeholder="Contoh: X IPA 1">
+                    </div>
+                </div>
+
+                <h2>Pembayaran Dipilih</h2>
+                <div class="cart-items" id="cartItems">
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">📋</div>
+                        <p>Belum ada pembayaran dipilih</p>
+                    </div>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-row summary-total">
+                        <span>Total Pembayaran:</span>
+                        <span id="total">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="payBtn" onclick="checkout()" disabled>Bayar & Print Bukti</button>
+                    <button class="btn btn-secondary" onclick="clearCart()">Hapus Semua</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Template -->
+    <div class="receipt" id="receipt">
+        <div class="receipt-header">
+            <div class="receipt-title">TANDA BUKTI PEMBAYARAN SEKOLAH</div>
+        </div>
+        
+        <div class="receipt-no">NO. <span id="receiptNo"></span></div>
+
+        <div class="receipt-field">
+            <span class="receipt-label">Telah diterima dari</span>
+            <span class="receipt-value" id="receiptFrom"></span>
+        </div>
+
+        <div class="receipt-field">
+            <span class="receipt-label">Ananda / Kelas</span>
+            <span class="receipt-value" id="receiptClass"></span>
+        </div>
+
+        <div class="receipt-field">
+            <span class="receipt-label">Uang sejumlah</span>
+            <span class="receipt-value" id="receiptAmount"></span>
+        </div>
+
+        <div class="receipt-field">
+            <span class="receipt-label">Rincian Pembayaran</span>
+            <span class="receipt-value" id="receiptDetail"></span>
+        </div>
+
+        <div class="receipt-field">
+            <span class="receipt-label">Catatan</span>
+            <span class="receipt-value" id="receiptNote"></span>
+        </div>
+
+        <div class="receipt-items" id="receiptItems"></div>
+
+        <div class="receipt-total-box">
+            <div class="receipt-total">Rp. <span id="receiptTotal"></span></div>
+        </div>
+
+        <div class="receipt-note">
+            Note: Pembayaran dilakukan sebelum tanggal 10 setiap bulannya
+        </div>
+
+        <div class="receipt-footer">
+            <div>Surabaya, <span id="receiptDate"></span></div>
+            <div class="receipt-signature"></div>
+        </div>
+    </div>
+
+    <script>
+        const payments = [
+            { id: 1, name: 'SPP Bulan Ini', price: 500000, icon: '📚', category: 'SPP' },
+            { id: 2, name: 'Uang Gedung', price: 2000000, icon: '🏫', category: 'Biaya Gedung' },
+            { id: 3, name: 'Uang Seragam', price: 450000, icon: '👔', category: 'Seragam' },
+            { id: 4, name: 'Uang Buku', price: 350000, icon: '📖', category: 'Buku' },
+            { id: 5, name: 'Uang Kegiatan', price: 200000, icon: '🎨', category: 'Kegiatan' },
+            { id: 6, name: 'Uang Praktikum', price: 300000, icon: '🔬', category: 'Praktikum' },
+            { id: 7, name: 'Uang Les Tambahan', price: 250000, icon: '✏️', category: 'Les' },
+            { id: 8, name: 'Uang Ekskul', price: 150000, icon: '⚽', category: 'Ekstrakurikuler' },
+            { id: 9, name: 'Uang Study Tour', price: 1500000, icon: '🚌', category: 'Study Tour' },
+            { id: 10, name: 'Uang Ujian', price: 400000, icon: '📝', category: 'Ujian' },
+            { id: 11, name: 'Uang Wisuda', price: 800000, icon: '🎓', category: 'Wisuda' },
+            { id: 12, name: 'Uang Komite', price: 100000, icon: '💼', category: 'Komite' }
+        ];
+
+        let cart = [];
+        let receiptCounter = 1;
+
+        function formatRupiah(amount) {
+            return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+
+        function terbilang(angka) {
+            const bilangan = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
+            
+            if (angka < 12) {
+                return bilangan[angka];
+            } else if (angka < 20) {
+                return terbilang(angka - 10) + ' Belas';
+            } else if (angka < 100) {
+                return terbilang(Math.floor(angka / 10)) + ' Puluh ' + terbilang(angka % 10);
+            } else if (angka < 200) {
+                return 'Seratus ' + terbilang(angka - 100);
+            } else if (angka < 1000) {
+                return terbilang(Math.floor(angka / 100)) + ' Ratus ' + terbilang(angka % 100);
+            } else if (angka < 2000) {
+                return 'Seribu ' + terbilang(angka - 1000);
+            } else if (angka < 1000000) {
+                return terbilang(Math.floor(angka / 1000)) + ' Ribu ' + terbilang(angka % 1000);
+            } else if (angka < 1000000000) {
+                return terbilang(Math.floor(angka / 1000000)) + ' Juta ' + terbilang(angka % 1000000);
+            }
+            return angka.toString();
+        }
+
+        function renderPayments() {
+            const grid = document.getElementById('paymentsGrid');
+            grid.innerHTML = payments.map(payment => `
+                <div class="payment-card" onclick="addToCart(${payment.id})">
+                    <div class="payment-icon">${payment.icon}</div>
+                    <div class="payment-name">${payment.name}</div>
+                    <div class="payment-price">${formatRupiah(payment.price)}</div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(paymentId) {
+            const payment = payments.find(p => p.id === paymentId);
+            const existingItem = cart.find(item => item.id === paymentId);
+
+            if (existingItem) {
+                alert('Pembayaran ini sudah ditambahkan!');
+                return;
+            }
+
+            cart.push({ ...payment });
+            renderCart();
+        }
+
+        function removeFromCart(paymentId) {
+            cart = cart.filter(item => item.id !== paymentId);
+            renderCart();
+        }
+
+        function renderCart() {
+            const cartItemsDiv = document.getElementById('cartItems');
+            
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">📋</div>
+                        <p>Belum ada pembayaran dipilih</p>
+                    </div>
+                `;
+            } else {
+                cartItemsDiv.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.icon} ${item.name}</div>
+                            <div class="cart-item-price">${formatRupiah(item.price)}</div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="remove-btn" onclick="removeFromCart(${item.id})">×</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            updateSummary();
+            updatePayButton();
+        }
+
+        function updateSummary() {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('total').textContent = formatRupiah(total);
+        }
+
+        function updatePayButton() {
+            const payBtn = document.getElementById('payBtn');
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value.trim();
+            
+            if (cart.length > 0 && studentName && studentClass) {
+                payBtn.disabled = false;
+            } else {
+                payBtn.disabled = true;
+            }
+        }
+
+        function clearCart() {
+            if (cart.length === 0) return;
+            
+            if (confirm('Hapus semua pembayaran dari daftar?')) {
+                cart = [];
+                renderCart();
+            }
+        }
+
+        function getCurrentDate() {
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const now = new Date();
+            return `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+
+        function checkout() {
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value.trim();
+
+            if (!studentName || !studentClass) {
+                alert('Mohon lengkapi data siswa terlebih dahulu!');
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert('Belum ada pembayaran yang dipilih!');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+            // Fill receipt data
+            document.getElementById('receiptNo').textContent = String(receiptCounter).padStart(4, '0');
+            document.getElementById('receiptFrom').textContent = studentName;
+            document.getElementById('receiptClass').textContent = studentClass;
+            document.getElementById('receiptAmount').textContent = terbilang(total) + ' Rupiah';
+            
+            // Get payment details
+            const paymentDetails = cart.map(item => item.category).join(', ');
+            document.getElementById('receiptDetail').textContent = paymentDetails;
+            document.getElementById('receiptNote').textContent = '';
+            
+            // Fill items
+            const itemsHtml = cart.map(item => 
+                `<div class="receipt-item">${item.name} - ${formatRupiah(item.price)}</div>`
+            ).join('');
+            document.getElementById('receiptItems').innerHTML = itemsHtml;
+            
+            document.getElementById('receiptTotal').textContent = total.toLocaleString('id-ID');
+            document.getElementById('receiptDate').textContent = getCurrentDate();
+
+            // Print
+            window.print();
+
+            // Clear after print
+            receiptCounter++;
+            cart = [];
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentClass').value = '';
+            renderCart();
+        }
+
+        // Event listeners for input fields
+        document.getElementById('studentName').addEventListener('input', updatePayButton);
+        document.getElementById('studentClass').addEventListener('input', updatePayButton);
+
+        renderPayments();
+    </script>
+</body>
+</html>
